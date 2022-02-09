@@ -3,9 +3,10 @@ marp: true
 paginate: true
 color: #ffff
 backgroundColor: #2A2A2A
-header: 'LinuxLab - ESGI'
+header: '![width:100px height:100px](./img/logo.png)'
 footer: "**12/01/2022 - Evan Bitic & Alexis Douannes**"
 author:  Evan Bitic & Alexis Douannes
+class: invert
 ---
 
 # Automatisation
@@ -108,6 +109,8 @@ Ansible
 ---
 
 # Gestion des configurations : Ansible
+
+![ width:100px](img/Ansible_logo.svg)
 
 
 ---
