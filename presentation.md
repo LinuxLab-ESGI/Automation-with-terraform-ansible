@@ -92,26 +92,32 @@ En quelque point :
 
 # Gestion des configurations
 
-La gestion des configurations est un processus qui permet de maintenir les systèmes informatiques, les serveurs et les logiciels dans l'état souhaité et d'en préserver la cohérence
+La gestion des configurations est un processus qui permet de maintenir les systèmes informatiques, les serveurs et les logiciels comme prévu au fil des changements effectués.
 
-zbi mode :
-Sans l'auto
-Gestion conf c'est cool, ca permet de voir si tu fais pas de la merde
-Mais c'est chiant et long zbi
+Cette gestion des configurations intervient seulement après le provisionnement des systèmes souhaités.
 
+Exemple d'utilisation :
+- Déploiement d'une nouvelle application
+- Déploiement de configuration systèmes et réseaux
+- ...
 
-Avec l'auto
-Après le IaC, on gère les confs
-Cela permet de conf la machine sur différents aspect, réseau, logiciel, compte utilisateur etc
-
-Ansible
+En résumé :
+- Déployer les configurations rapidement
+- Déployer une configuration fiable et fonctionnelle
 
 ---
 
 # Gestion des configurations : Ansible
+*Logiciel libre, créé par RedHat*
 
 ![ width:100px](img/Ansible_logo.svg)
 
+C'est un outil développé pour la gestion et la configuration des ordinateurs, s'appuyant sur des playbooks (script) rédigés en YAML nous permettant d'énumérer les tâches à effectuer.
+
+En quelques points :
+- Rédaction de playbooks simple
+- Gestion de nombreux ordinateurs en simultané
+- Très populaire
 
 ---
 
