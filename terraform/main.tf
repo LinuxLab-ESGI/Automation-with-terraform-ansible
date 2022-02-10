@@ -13,19 +13,21 @@ provider "azurerm" {
 
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "linuxlabgroup" {
-  name     = "linuxLabGroup"
-  location = "francecentral"
+  name     = var.ressource_groupe_name
+  location = var.location
 
   tags = {
     environment = "Terraform Demo"
   }
 }
 
+### Network configuration
+
 # Create virtual network
 resource "azurerm_virtual_network" "linuxlabnetwork" {
   name                = "linuxLabNetwork"
   address_space       = ["10.0.0.0/16"]
-  location            = "francecentral"
+  location            = var.location
   resource_group_name = azurerm_resource_group.linuxlabgroup.name
 
   tags = {
@@ -41,22 +43,10 @@ resource "azurerm_subnet" "linuxlabsubnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Create public IPs
-resource "azurerm_public_ip" "linuxlabEIP" {
-  name                = "linuxLabEIP"
-  location            = "francecentral"
-  resource_group_name = azurerm_resource_group.linuxlabgroup.name
-  allocation_method   = "Dynamic"
-
-  tags = {
-    environment = "Terraform Demo"
-  }
-}
-
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "linuxlabsg" {
   name                = "LinuxLabSecurityGroup"
-  location            = "francecentral"
+  location            = var.location
   resource_group_name = azurerm_resource_group.linuxlabgroup.name
 
   security_rule {
@@ -71,78 +61,74 @@ resource "azurerm_network_security_group" "linuxlabsg" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "Minecraft"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "25565"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+
+
   tags = {
     environment = "Terraform Demo"
   }
 }
 
-# Create network interface
-resource "azurerm_network_interface" "linuxlabNIC" {
-  name                = "linuxlabNIC"
-  location            = "francecentral"
+###
+
+# Create public IPs
+resource "azurerm_public_ip" "linuxlabEIP-minecraft" {
+  name                = "linuxLabEIP-minecraft"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.linuxlabgroup.name
+  allocation_method   = "Dynamic"
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+
+}
+
+resource "azurerm_network_interface" "linuxlabNIC-minecraft" {
+  name                = "linuxlabNIC-minecraft"
+  location            = var.location
   resource_group_name = azurerm_resource_group.linuxlabgroup.name
 
   ip_configuration {
     name                          = "myNicConfiguration"
     subnet_id                     = azurerm_subnet.linuxlabsubnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.linuxlabEIP.id
+    public_ip_address_id          = azurerm_public_ip.linuxlabEIP-minecraft.id
   }
 
   tags = {
     environment = "Terraform Demo"
   }
 }
+
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.linuxlabNIC.id
+  network_interface_id      = azurerm_network_interface.linuxlabNIC-minecraft.id
   network_security_group_id = azurerm_network_security_group.linuxlabsg.id
 }
 
-# Generate random text for a unique storage account name
-resource "random_id" "randomId" {
-  keepers = {
-    # Generate a new ID only when a new resource group is defined
-    resource_group = azurerm_resource_group.linuxlabgroup.name
-  }
-
-  byte_length = 8
-}
-
-# Create storage account for boot diagnostics
-resource "azurerm_storage_account" "mystorageaccount" {
-  name                     = "diag${random_id.randomId.hex}"
-  resource_group_name      = azurerm_resource_group.linuxlabgroup.name
-  location                 = "francecentral"
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-
-  tags = {
-    environment = "Terraform Demo"
-  }
-}
-
-# Create (and display) an SSH key
-resource "tls_private_key" "example_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-output "tls_private_key" {
-  value     = tls_private_key.example_ssh.private_key_pem
-  sensitive = true
-}
-
 # Create virtual machine
-resource "azurerm_linux_virtual_machine" "minecraftVM" {
-  name                  = "minecraft"
-  location              = "francecentral"
+resource "azurerm_linux_virtual_machine" "VM_minecraft" {
+  name                  = "VM_minecraft"
+  location              = var.location
   resource_group_name   = azurerm_resource_group.linuxlabgroup.name
-  network_interface_ids = [azurerm_network_interface.linuxlabNIC.id]
+  network_interface_ids = [azurerm_network_interface.linuxlabNIC-minecraft.id]
   size                  = "Standard_DS1_v2"
 
   os_disk {
-    name                 = "myOsDisk"
+    name                 = "OsDisk_minecraft"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
@@ -155,16 +141,158 @@ resource "azurerm_linux_virtual_machine" "minecraftVM" {
   }
 
   computer_name                   = "minecraft"
-  admin_username                  = "azureuser"
+  admin_username                  = var.username
   disable_password_authentication = true
 
   admin_ssh_key {
-    username   = "azureuser"
-    public_key = tls_private_key.example_ssh.public_key_openssh
+    username   = var.username
+    public_key = file("./testKey.pub")
   }
 
-  boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+###
+
+# Create public IPs
+resource "azurerm_public_ip" "linuxlabEIP-minecraft2" {
+  name                = "linuxLabEIP-minecraft2"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.linuxlabgroup.name
+  allocation_method   = "Dynamic"
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+resource "azurerm_network_interface" "linuxlabNIC-minecraft2" {
+  name                = "linuxlabNIC-minecraft2"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.linuxlabgroup.name
+
+  ip_configuration {
+    name                          = "myNicConfiguration"
+    subnet_id                     = azurerm_subnet.linuxlabsubnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.linuxlabEIP-minecraft2.id
+  }
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+
+# Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "example2" {
+  network_interface_id      = azurerm_network_interface.linuxlabNIC-minecraft2.id
+  network_security_group_id = azurerm_network_security_group.linuxlabsg.id
+}
+
+# Create virtual machine
+resource "azurerm_linux_virtual_machine" "VM_minecraft2" {
+  name                  = "VM_minecraft2"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.linuxlabgroup.name
+  network_interface_ids = [azurerm_network_interface.linuxlabNIC-minecraft2.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    name                 = "OsDisk_minecraft2"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  computer_name                   = "minecraft2"
+  admin_username                  = var.username
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = var.username
+    public_key = file("./testKey.pub")
+  }
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+###
+
+# Create public IPs
+resource "azurerm_public_ip" "linuxlabEIP-minecraft3" {
+  name                = "linuxLabEIP-minecraft3"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.linuxlabgroup.name
+  allocation_method   = "Dynamic"
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+resource "azurerm_network_interface" "linuxlabNIC-minecraft3" {
+  name                = "linuxlabNIC-minecraft3"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.linuxlabgroup.name
+
+  ip_configuration {
+    name                          = "myNicConfiguration"
+    subnet_id                     = azurerm_subnet.linuxlabsubnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.linuxlabEIP-minecraft3.id
+  }
+
+  tags = {
+    environment = "Terraform Demo"
+  }
+}
+
+
+# Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "example3" {
+  network_interface_id      = azurerm_network_interface.linuxlabNIC-minecraft3.id
+  network_security_group_id = azurerm_network_security_group.linuxlabsg.id
+}
+
+# Create virtual machine
+resource "azurerm_linux_virtual_machine" "VM_minecraft3" {
+  name                  = "VM_minecraft3"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.linuxlabgroup.name
+  network_interface_ids = [azurerm_network_interface.linuxlabNIC-minecraft3.id]
+  size                  = "Standard_DS1_v2"
+
+  os_disk {
+    name                 = "OsDisk_minecraft3"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  computer_name                   = "minecraft3"
+  admin_username                  = var.username
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = var.username
+    public_key = file("./testKey.pub")
   }
 
   tags = {
