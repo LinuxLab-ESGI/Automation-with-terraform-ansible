@@ -2,7 +2,7 @@
 marp: true
 paginate: true
 color: #ffff
-backgroundColor: #2A2A2A
+backgroundColor: #303030
 footer: "**12/01/2022 - Evan Bitic & Alexis Douannes**"
 author:  Evan Bitic & Alexis Douannes
 class: invert
@@ -171,8 +171,7 @@ _header: '![width:100px height:100px](./img/logo.png)'
 -->
 
 # Source : 
-- https://www.redhat.com/fr/topics/automation/whats-it-automation 
-- https://www.youtube.com/watch?v=iik25wqIuFo
+- L'automatisation : https://www.redhat.com/fr/topics/automation/whats-it-automation 
 - Site officiel de Terraform : https://www.terraform.io/
 - Explication de Terraform & IAC : https://www.ibm.com/fr-fr/cloud/learn/terraform
 - Code Terraform : https://docs.microsoft.com/fr-fr/azure/developer/terraform/create-linux-virtual-machine-with-infrastructure
