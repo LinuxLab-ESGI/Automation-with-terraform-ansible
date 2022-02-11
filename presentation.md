@@ -35,7 +35,7 @@ _header: '![width:100px height:100px](./img/logo.png)'
 
 # C'est quoi l'automatisation ?
 
-L'automatisation, c'est l'execution d'un processus autonome suite à un délencheur manuel ou non.
+L'automatisation, c'est l'execution d'un processus autonome suite à un déclencheur manuel ou non.
 
 - Déclencheur -> Action
 
@@ -49,10 +49,10 @@ _header: '![width:100px height:100px](./img/logo.png)'
 # Que couvre l'automatisation informatique ?
 
 Automatisation :
-- Du réseau
+- du réseau
 - de la gestion des configurations
 - du déploiement d'applications
-- provisonnement du cloud
+- provisionnement du cloud
 
 ---
 <!--
@@ -84,12 +84,12 @@ _header: '![width:100px height:100px](./img/logo.png)'
 
 ## Provisionnement automatisé : L'approche
 
-Le IaC, Infrastructure en tant que code, permet de codifier l'infrastructure de manière à automatiser et à accélèrer le déploiement, de plus cela le rend reproductible. 
+Le IaC, Infrastructure en tant que code, permet de codifier l'infrastructure de manière à automatiser et à accélérer le déploiement, de plus cela le rend reproductible. 
 
 En résumé :
 - C'est plus rapide
 - C'est plus fiable
-- Cela empêche la dérive de la configration
+- Cela empêche la dérive de la configuration
 - Cela optimise votre infrastructure
 
 ---
@@ -111,7 +111,7 @@ En quelque point :
 
 ---
 
-# Gestion des configurations
+# Gestion des configurations : Introduction
 
 La gestion des configurations est un processus qui permet de maintenir les systèmes informatiques, les serveurs et les logiciels comme prévu au fil des changements effectués.
 
