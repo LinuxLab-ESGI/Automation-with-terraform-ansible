@@ -1,0 +1,43 @@
+---
+- name: Install minecraft server
+  hosts: servers
+  remote_user: LinuxLabUser
+  become: true
+
+  tasks:
+  - name: Add repo for java
+    command: add-apt-repository ppa:linuxuprising/java -y
+
+  - name: Update
+    apt:
+      update_cache: yes
+
+  - name: Install Java & utils
+    apt: 
+      name: 
+        - openjdk-17-jdk
+        - openjdk-17-jre
+        - curl
+        - vim
+      state: present
+
+  - name: Create server directory
+    file:
+      path: /srv/mcserver
+      state: directory
+
+  - name: Download server.jar
+    shell:
+      cmd: wget https://launcher.mojang.com/v1/objects/125e5adf40c659fd3bce3e66e67a16bb49ecc1b9/server.jar
+      chdir: /srv/mcserver/
+
+  - name: Import start.sh
+    template:
+      src: templates/start.sh
+      dest: /srv/mcserver/start.sh
+      mode: 0755
+
+  - name: Import eula
+    template: 
+      src: templates/eula.txt
+      dest: /srv/mcserver/eula.txt
