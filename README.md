@@ -32,9 +32,9 @@ Non, une approche globale de l'automatisation informatique peut vous aider à so
 
 # Provisionnement : Introduction
 
-Nos environnements sont majoritérement virtualisées, ce qui nous permets la gestion des réseaux, espace de stockage et autres machines virtuelles par l'intermédiaire d'un interface logiciel.
+Nos environnements sont majoritairement virtualisés, ce qui permet la gestion des réseaux, espaces de stockage et autres machines virtuelles par l'intermédiaire d'une interface logicielle.
 
-La communication entre vous et les environnements virtualisées peuvent être automatiser afin de vous permettre de créer une infrastructure entière, c'est ce qu'on appel l'approche IaC (Infrasctrure as Code)
+La communication entre vous et les environnements virtualisés peut être automatisée afin de vous permettre de créer une infrastructure entière, c'est ce qu'on appel l'approche IaC (Infrasctrure as Code)
 
 ## Provisionnement automatisé : L'approche
 
@@ -48,13 +48,13 @@ En résumé :
 
 # Provisionnement : Technologie
 
-Terraform est une solution opensource, créé par HashiCorp en langage Go. 
+Terraform est une solution opensource, créée par HashiCorp en langage Go. 
 
 C'est un outil de codage déclaratif, qui utilise le langage HCL, c'est un dérivé du JSON par HashiCorp, qui va vous permettre de décrire votre infrastructure.
 
-La connexion à l'interface ce fait via la commande Powershell `az login`
+La connexion à l'interface se fait via la commande Powershell `az login`
 
-En quelque point : 
+En quelques points : 
 - Syntaxe simple
 - Gestion de plusieurs cloud
 - Le plus populaire
@@ -67,7 +67,7 @@ Cette gestion des configurations intervient seulement après le provisionnement 
 
 Exemple d'utilisation :
 - Déploiement d'une nouvelle application
-- Déploiement de configuration systèmes et réseaux
+- Déploiement de configurations systèmes et réseaux
 
 En résumé :
 - Déployer les configurations rapidement
